@@ -80,7 +80,19 @@ Freshly created cluster will be started automatically.
 
 **Remember to stop your cluster in time!**
 
-### 4. Terminate the cluster
+### 4. Show cluster information
+
+Use the following command to show the cluster information.
+
+The information contains number of nodes, master node IP, current status (started/stopped), and so on.
+
+````bash
+# They are identical
+awsmpi show <name>
+awsmpi describe <name>
+````
+
+### 5. Terminate the cluster
 
 If you don't need the cluster any more, you should terminate it:
 
