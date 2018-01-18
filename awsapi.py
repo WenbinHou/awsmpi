@@ -431,3 +431,20 @@ class Client:
         for instance in instances:
             instance_id = instance["InstanceId"]
             ec2.Instance(instance_id).wait_until_stopped()
+
+    def describe(self):
+        instances = self._find_instances()
+        # print(instances)
+        if len(instances) == 0:
+            print("Cluster %s does not exist!" % self._name)
+            return
+
+        for instance in instances:
+            instance_id = instance["InstanceId"]
+            instance_name = list(filter(lambda kv: kv["Key"] == "Name", instance["Tags"]))[0]["Value"]  # type: str
+            instance_state = instance["State"]["Name"]
+
+            if instance_name.endswith("-1"):
+                print("Node %s: %s (master: %s)" % (instance_name, instance_state, instance["PublicIpAddress"]))
+            else:
+                print("Node %s: %s" % (instance_name, instance_state))

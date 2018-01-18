@@ -20,6 +20,13 @@ Before using awsmpi, you must login AWS with `aws configure` and set your accoun
 - AWS Secret Access Key
 - Region (e.g. `cn-north-1`)
 
+### Node information
+
+As you create a cluster named `<name>` with `N` nodes, their hostnames will be: `<name>-1` `<name>-2` ... `<name>-N` respectively.
+
+`<name>-1` is the master node and will be assigned an immutable public IP (AWS elastic IP). You are supported to SSH into this node.
+
+As for MPI, `/etc/hostfile` stores all nodes' hostnames. Detailed information about MPI *hostfile* could be found in [OpenMPI documentation](https://www.open-mpi.org/faq/?category=running#mpirun-hostfile).
 
 ## Commands
 
@@ -31,11 +38,11 @@ awsmpi create <name> <node-count> <vm-type> <shared-volume-size>
 
 - *\<name\>*: Name of your cluster
 - *\<node-count\>*: Number of nodes
-- *\<vm-type\>*: type of vm, like `c3.xlarge`
+- *\<vm-type\>*: type of instance, like `c3.xlarge`
 - *\<shared-volume-size\>*: size of shared volume in GB. At least 4 GB.
 
 When creating a cluster, all nodes will be put to one placement-group if supported.
-<br>**(Some types of VM do not support placement-group!)**
+<br>**(Some types of instances do not support placement-group!)**
 
 ### 2. SSH to the cluster
 
@@ -43,6 +50,7 @@ After you create a cluster with *\<name\>*, you may login the first node (also t
 
 ````bash
 # The password is "ubuntu" (without quotes)
+# You may change the password if you desire.
 
 ssh ubuntu@<master-node-ip>
 ````
@@ -86,7 +94,7 @@ This will delete the cluster permanently.
 
 ### 1. Cluster-shared data: **/share**
 
-Cluster-shared data is mounted at `/share` (NFS).
+Cluster-shared data is mounted at `/share` (GlusterFS).
 
 These data are persistent across cluster's stop & (re)start.
 
@@ -94,7 +102,7 @@ These data are persistent across cluster's stop & (re)start.
 
 ### 2. Permanent data: **/permanent**
 
-Permanent data is mounted at `/permanent` (Mount S3 as FUSE).
+Permanent data is mounted at `/permanent` (GlusterFS).
 
 Data in this directory will be persisted even if a cluster terminates.
 

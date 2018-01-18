@@ -42,6 +42,9 @@ def main(args):
     elif args[0] in ("terminate", "destroy"):
         # awsmpi terminate <name>
         client.terminate()
+    elif args[0] in ("show", "describe", "info"):
+        # awsmpi terminate <name>
+        client.describe()
     elif args[0] == "start":
         # awsmpi start <name>
         client.start()
