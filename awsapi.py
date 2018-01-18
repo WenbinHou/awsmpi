@@ -296,7 +296,7 @@ class Client:
         )
 
         for idx in range(0, len(instances)):
-            instance_name = "%s-%d" % (self._fullname, idx + 1)
+            instance_name = "%s-%d" % (self._name, idx + 1)
             instance_id = instances[idx]["InstanceId"]
             if instance_id == master_instance_id:
                 print("%s: (%s) (master: %s)" % (instance_name, instance_id, master_public_ip))
@@ -318,19 +318,19 @@ class Client:
         # /opt/awsmpi/master.py <name> <count> <ip1> ... <ipN>
         ssh_args = [self._name, vm_count] + list(map(lambda ins: ins["PrivateIpAddress"], instances))
         ssh_cmd = ("/opt/awsmpi/master.sh" + " %s" * len(ssh_args)) % tuple(ssh_args)
-        print(ssh_cmd)
+        # print(ssh_cmd)
         stdin, stdout, stderr = ssh.exec_command(ssh_cmd)
-        print("==== stdout ====")
-        for line in stdout.readlines(): print(line, end='')
-        print("==== stderr ====")
-        for line in stderr.readlines(): print(line, end='')
+        # print("==== stdout ====")
+        # for line in stdout.readlines(): print(line, end='')
+        # print("==== stderr ====")
+        # for line in stderr.readlines(): print(line, end='')
         ssh.close()
 
         print("Done. Use 'ssh ubuntu@%s' (password: ubuntu) to login now!" % master_public_ip)
 
     def _find_instances(self):
         try:
-            print(self._fullname)
+            # print(self._fullname)
             reservations = self._ec2.describe_instances(
                 Filters=[
                     {
@@ -368,6 +368,7 @@ class Client:
         for instance in instances:
             instance_id = instance["InstanceId"]
             instance_name = list(filter(lambda kv: kv["Key"] == "Name", instance["Tags"]))[0]["Value"] # type: str
+            instance_name = instance_name[len(self._username)+1:]
 
             # Deallocate elastic IP if associated
             if "PublicIpAddress" in instance and instance_name.endswith("-1"):
@@ -400,6 +401,7 @@ class Client:
         for instance in instances:
             instance_id = instance["InstanceId"]
             instance_name = list(filter(lambda kv: kv["Key"] == "Name", instance["Tags"]))[0]["Value"]
+            instance_name = instance_name[len(self._username)+1:]
 
             print("Starting %s (%s)" % (instance_name, instance_id))
             self._ec2.start_instances(InstanceIds=[instance_id])
@@ -421,6 +423,7 @@ class Client:
         for instance in instances:
             instance_id = instance["InstanceId"]
             instance_name = list(filter(lambda kv: kv["Key"] == "Name", instance["Tags"]))[0]["Value"]
+            instance_name = instance_name[len(self._username)+1:]
 
             print("Stopping %s (%s)" % (instance_name, instance_id))
             self._ec2.stop_instances(InstanceIds=[instance_id])
@@ -439,11 +442,13 @@ class Client:
             print("Cluster %s does not exist!" % self._name)
             return
 
+        print("\nCluster %s information:" % self._fullname)
         for instance in instances:
             instance_id = instance["InstanceId"]
             instance_name = list(filter(lambda kv: kv["Key"] == "Name", instance["Tags"]))[0]["Value"]  # type: str
             instance_state = instance["State"]["Name"]
 
+            instance_name = instance_name[len(self._username)+1:]
             if instance_name.endswith("-1"):
                 print("Node %s: %s (master: %s)" % (instance_name, instance_state, instance["PublicIpAddress"]))
             else:
