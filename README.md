@@ -36,8 +36,8 @@ As for MPI, `/etc/hostfile` stores all nodes' hostnames. Detailed information ab
 awsmpi create <name> <node-count> <vm-type> <shared-volume-size>
 ````
 
-- *\<name\>*: Name of your cluster
-- *\<node-count\>*: Number of nodes
+- *\<name\>*: name of your cluster
+- *\<node-count\>*: number of nodes
 - *\<vm-type\>*: type of instance, like `c3.xlarge`
 - *\<shared-volume-size\>*: size of shared volume in GB. At least 4 GB.
 
