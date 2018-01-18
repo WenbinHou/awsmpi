@@ -41,29 +41,9 @@ When creating a cluster, all nodes will be put to one placement-group if support
 
 After you create a cluster with *\<name\>*, you may login the first node (also the master node).
 
-Cluster login information is writen in `~/.ssh/config`, so that these simple commands work:
-
-````bash
-# SSH login to cluster
-ssh <name>
-
-# Or if you want to transfer a file
-scp testfile <name>:~/
-````
-
-However, if you switch to another user (other than in which you create the cluster), you may run `awsmpi update` before `ssh`. (This is required only once.)
-
-````bash
-# Now if you switch to another user:
-
-awsmpi update-ssh   # This will rescan your created clusters and update ~/.ssh/config
-ssh <name>          # Now this should work
-````
-
-<br>If you would like to login to the cluster explicitly, you need to know the master node's public IP first, and then:
-
 ````bash
 # The password is "ubuntu" (without quotes)
+
 ssh ubuntu@<master-node-ip>
 ````
 
