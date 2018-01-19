@@ -2,7 +2,7 @@
 
 from __future__ import print_function
 from botocore.exceptions import ClientError
-from botocore.exceptions import NoCredentialsError
+from botocore.exceptions import NoCredentialsError, NoRegionError
 import time
 import boto3
 import paramiko
@@ -52,7 +52,6 @@ class Client:
     def __init__(self, args):
         # type: (list[str]) -> Client
 
-        self._ec2 = boto3.client("ec2")
         self._args = args       # type: list[str]
         self._username = ""     # type: str
         self._region = ""       # type: str
@@ -67,10 +66,15 @@ class Client:
 
         # Try to get current username
         try:
+            self._ec2 = boto3.client("ec2")
+
             # like "arn:aws-cn:iam::544013047112:user/houwenbin"
             user_arn = boto3.client('sts').get_caller_identity()["Arn"]  # type: str
             self._username = user_arn.split('/')[-1]
             print("Current user: %s" % self._username)
+        except NoRegionError:
+            print("No region found. Please run 'aws configure' first.")
+            exit(1)
         except NoCredentialsError:
             print("No credentials found. Please run 'aws configure' first.")
             exit(1)
@@ -320,10 +324,12 @@ class Client:
         ssh_cmd = ("/opt/awsmpi/master.sh" + " %s" * len(ssh_args)) % tuple(ssh_args)
         # print(ssh_cmd)
         stdin, stdout, stderr = ssh.exec_command(ssh_cmd)
+        stdoutlines = stdout.readlines()
+        stderrlines = stderr.readlines()
         # print("==== stdout ====")
-        # for line in stdout.readlines(): print(line, end='')
+        # for line in stdoutlines: print(line, end='')
         # print("==== stderr ====")
-        # for line in stderr.readlines(): print(line, end='')
+        # for line in stderrlines: print(line, end='')
         ssh.close()
 
         print("Done. Use 'ssh ubuntu@%s' (password: ubuntu) to login now!" % master_public_ip)

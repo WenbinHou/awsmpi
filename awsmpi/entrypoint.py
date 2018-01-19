@@ -22,7 +22,6 @@ Commands:
     awsmpi stop <name>
     awsmpi show|describe <name>
     awsmpi terminate <name>
-    awsmpi update-ssh
 
 For detailed documentation, please refer to https://github.com/WenbinHou/awsmpi
 """)

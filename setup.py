@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='awsmpi',
-    version='1.0-alpha',
+    version='1.4-alpha',
     author="Wenbin Hou",
     author_email="catchyrime@fastmail.com",
     description="Manage mpi cluster on AWS.",
@@ -21,7 +21,7 @@ setup(
     install_requires=["boto3", "paramiko", "awscli"],
     package_data={
         '': ['*.md'],
-        'awsmpi': ['*.sh'],
+        'awsmpi': ['*.sh', '*.py'],
     },
     classifiers=[
         "Development Status :: 3 - Alpha",
