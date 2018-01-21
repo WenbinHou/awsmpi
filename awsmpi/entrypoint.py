@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import sys
-import awsapi
+from . import awsapi
 
 
 def check_args_or_exit(args):

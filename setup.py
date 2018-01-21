@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='awsmpi',
-    version='1.4-alpha',
+    version='1.5-alpha',
     author="Wenbin Hou",
     author_email="catchyrime@fastmail.com",
     description="Manage mpi cluster on AWS.",
